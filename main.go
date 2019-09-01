@@ -63,6 +63,8 @@ func main() {
 			currentDir = changedDir
 		case "exit":
 			os.Exit(0)
+		case "":
+			break
 		default:
 			cmd := exec.Command(inputParts[0], inputParts[1:]...)
 			cmd.Stderr = os.Stderr
@@ -126,6 +128,10 @@ func ls(currentDir string, flags string) {
 func handleSigint(sigChan chan os.Signal, usr *user.User) {
 	for {
 		<-sigChan
+		signal := <-sigChan
+		if signal.String() == "child exited" {
+			continue
+		}
 		fmt.Fprint(os.Stdout, "\r \r")
 		fmt.Print("                                                                                 ")
 		fmt.Fprint(os.Stdout, "\r \r")
@@ -134,6 +140,8 @@ func handleSigint(sigChan chan os.Signal, usr *user.User) {
 			fmt.Println(err)
 			continue
 		}
+		fmt.Print(getDir(pwd, usr))
+		fmt.Println()
 		fmt.Print(getDir(pwd, usr))
 	}
 }
