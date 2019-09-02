@@ -67,8 +67,9 @@ func main() {
 			break
 		default:
 			cmd := exec.Command(inputParts[0], inputParts[1:]...)
-			cmd.Stderr = os.Stderr
+			cmd.Stdin = os.Stdin
 			cmd.Stdout = os.Stdout
+			cmd.Stderr = os.Stderr
 			err = cmd.Run()
 			if err != nil {
 				fmt.Println(err)
